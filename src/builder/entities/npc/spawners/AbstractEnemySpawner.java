@@ -12,20 +12,20 @@ import engine.timing.TickTimer;
  */
 public abstract class AbstractEnemySpawner implements Spawner {
 
-    private int xPos;
-    private int yPos;
+    private int xpos;
+    private int ypos;
     private final TickTimer timer;
 
     /**
      * Creates a spawner at the given location with a default spawn interval.
      *
-     * @param xPos the x coordinate of the spawner
-     * @param yPos the y coordinate of the spawner
+     * @param xpos the x coordinate of the spawner
+     * @param ypos the y coordinate of the spawner
      * @param defaultDuration the default spawn interval in ticks
      */
-    protected AbstractEnemySpawner(int xPos, int yPos, int defaultDuration) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    protected AbstractEnemySpawner(int xpos, int ypos, int defaultDuration) {
+        this.xpos = xpos;
+        this.ypos = ypos;
         this.timer = new RepeatingTimer(defaultDuration);
     }
 
@@ -66,21 +66,21 @@ public abstract class AbstractEnemySpawner implements Spawner {
 
     @Override
     public int getX() {
-        return xPos;
+        return xpos;
     }
 
     @Override
-    public void setX(int xPos) {
-        this.xPos = xPos;
+    public void setX(int xpos) {
+        this.xpos = xpos;
     }
 
     @Override
     public int getY() {
-        return yPos;
+        return ypos;
     }
 
     @Override
-    public void setY(int yPos) {
-        this.yPos = yPos;
+    public void setY(int ypos) {
+        this.ypos = ypos;
     }
 }
