@@ -28,17 +28,17 @@ public class GuardBee extends Npc implements Expirable {
     /**
      * Creates a new guard bee.
      *
-     * @param xCoordinate horizontal spawning position
-     * @param yCoordinate vertical spawning position
+     * @param xcoordinate horizontal spawning position
+     * @param ycoordinate vertical spawning position
      * @param trackedTarget target with a position we want this to track
      */
-    public GuardBee(int xCoordinate, int yCoordinate, HasPosition trackedTarget) {
-        super(xCoordinate, yCoordinate);
+    public GuardBee(int xcoordinate, int ycoordinate, HasPosition trackedTarget) {
+        super(xcoordinate, ycoordinate);
         this.setSprite(art.getSprite("default"));
         this.trackedTarget = trackedTarget;
 
-        this.spawnX = xCoordinate;
-        this.spawnY = yCoordinate;
+        this.spawnX = xcoordinate;
+        this.spawnY = ycoordinate;
 
         double deltaX = trackedTarget.getX() - this.getX();
         double deltaY = trackedTarget.getY() - this.getY();

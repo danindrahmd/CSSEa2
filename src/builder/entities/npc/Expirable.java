@@ -7,7 +7,14 @@ import engine.timing.FixedTimer;
  * time.
  */
 public interface Expirable {
+
+    /**
+     * Set lifespan
+     */
     public void setLifespan(FixedTimer lifespan);
 
+    /**
+     * get lifespan
+     */
     public FixedTimer getLifespan();
 }

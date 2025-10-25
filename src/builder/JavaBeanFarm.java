@@ -66,7 +66,7 @@ public class JavaBeanFarm implements Game {
 
     private String readAllReader(Reader reader) throws IOException {
         BufferedReader br = new BufferedReader(reader);
-         StringJoiner sb = new StringJoiner(System.lineSeparator());
+        StringJoiner sb = new StringJoiner(System.lineSeparator());
         String line;
         while ((line = br.readLine()) != null) {
             sb.add(line);
@@ -83,7 +83,8 @@ public class JavaBeanFarm implements Game {
      * @throws IOException If the game is unable to find or open the default world map file.
      * @throws WorldLoadException If the default world map file cannot be parsed successfully.
      */
-    public JavaBeanFarm(Dimensions dimensions, Reader mapReader, Reader detailReader)
+    public JavaBeanFarm(Dimensions dimensions,
+                        Reader mapReader, Reader detailReader)
             throws IOException, WorldLoadException {
 
         final String detailsContent = readAllReader(detailReader);
@@ -155,7 +156,11 @@ public class JavaBeanFarm implements Game {
         this.overlays.add(new ResourceOverlay(dimensions));
     }
 
-    public JavaBeanFarm(Dimensions dimensions, String mapFile, String detailsFile) throws IOException, WorldLoadException {
+    /**
+     * Javabean method
+     */
+    public JavaBeanFarm(Dimensions dimensions,
+                        String mapFile, String detailsFile) throws IOException, WorldLoadException {
         this(dimensions, new FileReader(mapFile), new FileReader(detailsFile));
     }
 
