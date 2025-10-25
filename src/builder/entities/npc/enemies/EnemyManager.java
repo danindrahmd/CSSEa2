@@ -15,99 +15,134 @@ import engine.renderer.Renderable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages all enemy spawners and active enemies in the game.
+ * Responsible for spawning, updating, and cleaning up enemies.
+ */
 public class EnemyManager implements Tickable, Interactable, RenderableGroup {
 
-    public final ArrayList<Spawner> spawners = new ArrayList<>();
-    public final ArrayList<Enemy> Birds = new ArrayList<>();
-    public int spawnX;
-    public int spawnY;
+    private final ArrayList<Spawner> spawners = new ArrayList<>();
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private int spawnX;
+    private int spawnY;
 
+    /**
+     * Creates a new enemy manager.
+     *
+     * @param dimensions the game dimensions (currently unused but kept for compatibility)
+     */
     public EnemyManager(Dimensions dimensions) {}
 
+    /**
+     * Removes all enemies marked for removal from the active enemy list.
+     */
     public void cleanup() {
-        for (int i = this.Birds.size() - 1; i >= 0; i -= 1) {
-            if (this.Birds.get(i).isMarkedForRemoval()) {
-                this.Birds.remove(i);
-            }
-        }
+        enemies.removeIf(Enemy::isMarkedForRemoval);
     }
 
     /**
-     * @param spawner
+     * Adds a spawner to the manager.
+     *
+     * @param spawner the spawner to add
      */
     public void add(Spawner spawner) {
         this.spawners.add(spawner);
     }
 
-    public Magpie mkM(Player player) {
-        final Magpie magpie = new Magpie(this.spawnX, this.spawnY, player);
-        this.Birds.add(magpie);
-        return magpie;
-    }
-
-    public Pigeon mkP(HasPosition hasPosition) {
-        final Pigeon pigeon = new Pigeon(this.spawnX, this.spawnY, hasPosition); //fixing double spawnX
-        this.Birds.add(pigeon);
-        return pigeon;
-    }
-
-    public Eagle mkE(Player player) {
-        final Eagle eagle = new Eagle(this.spawnX, this.spawnY, player);
-        this.Birds.add(eagle); //add bird to list so it can be rendered
-        return eagle;
-    }
-
-    @Override
-    public void tick(EngineState state, GameState game) {
-        this.cleanup();
-        for (Spawner spawner : this.spawners) {
-            spawner.tick(state, game);
-        }
-        for (Enemy bird : Birds) {
-            if (bird instanceof Magpie temp) {
-                temp.tick(state, game);
-            }
-            if (bird instanceof Eagle temp) {
-                temp.tick(state, game);
-            }
-            if (bird instanceof Pigeon temp) {
-                temp.tick(state, game);
-            }
-        }
+    /**
+     * Sets the spawn coordinates for the next enemy to be spawned.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     */
+    public void setSpawnLocation(int x, int y) {
+        this.spawnX = x;
+        this.spawnY = y;
     }
 
     /**
-     * Get all {@link Magpie}s positions from the enemy manager.
+     * Creates and adds a Magpie to the game.
      *
-     * @return all {@link Magpie}s positions from the enemy manager.
+     * @param player the player to target
+     * @return the created Magpie
      */
-    public ArrayList<Magpie> getMagpies() {
-        final ArrayList<Magpie> magpies = new ArrayList<Magpie>();
-        for (Enemy bird : Birds) {
-            if (bird instanceof Magpie temp) {
-                magpies.add(temp);
+    public Magpie mkM(Player player) {
+        final Magpie magpie = new Magpie(this.spawnX, this.spawnY, player);
+        this.enemies.add(magpie);
+        return magpie;
+    }
+
+    /**
+     * Creates and adds a Pigeon to the game.
+     *
+     * @param target the target position (usually a cabbage)
+     * @return the created Pigeon
+     */
+    public Pigeon mkP(HasPosition target) {
+        final Pigeon pigeon = new Pigeon(this.spawnX, this.spawnY, target);
+        this.enemies.add(pigeon);
+        return pigeon;
+    }
+
+    /**
+     * Creates and adds an Eagle to the game.
+     *
+     * @param player the player to target
+     * @return the created Eagle
+     */
+    public Eagle mkE(Player player) {
+        final Eagle eagle = new Eagle(this.spawnX, this.spawnY, player);
+        this.enemies.add(eagle);
+        return eagle;
+    }
+
+    /**
+     * Gets all active enemies.
+     * Returns a defensive copy to prevent external modification.
+     *
+     * @return a list of all active enemies
+     */
+    public List<Enemy> getAllEnemies() {
+        return new ArrayList<>(this.enemies);
+    }
+
+    /**
+     * Gets all Magpies currently in the game.
+     *
+     * @return a list of all active Magpies
+     */
+    public List<Magpie> getMagpies() {
+        final ArrayList<Magpie> magpies = new ArrayList<>();
+        for (Enemy enemy : enemies) {
+            if (enemy instanceof Magpie) {
+                magpies.add((Magpie) enemy);
             }
         }
         return magpies;
     }
 
-    public ArrayList<Enemy> getALl() {
-        return this.Birds;
+    @Override
+    public void tick(EngineState state, GameState game) {
+        this.cleanup();
+
+        // Tick all spawners
+        for (Spawner spawner : this.spawners) {
+            spawner.tick(state, game);
+        }
+
+        // Tick all enemies (polymorphism - no instanceof needed!)
+        for (Enemy enemy : enemies) {
+            enemy.tick(state, game);
+        }
     }
 
-    /**
-     * @param state The state of the engine, including the mouse, keyboard information and
-     *     dimension. Useful for processing keyboard presses or mouse movement.
-     * @param game The state of the game, including the player and world. Can be used to query or
-     *     update the game state.
-     */
     @Override
     public void interact(EngineState state, GameState game) {
-        /* @todo cleanup */
+        // Currently no interaction needed for enemies
     }
 
     @Override
     public List<Renderable> render() {
-        return new ArrayList<>(this.Birds);
+        return new ArrayList<>(this.enemies);
     }
 }

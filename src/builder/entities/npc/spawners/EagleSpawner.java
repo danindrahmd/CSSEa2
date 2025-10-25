@@ -1,61 +1,40 @@
 package builder.entities.npc.spawners;
 
 import builder.GameState;
-
 import engine.EngineState;
-import engine.timing.RepeatingTimer;
-import engine.timing.TickTimer;
 
-public class EagleSpawner implements Spawner {
+/**
+ * Spawner for Eagle enemies.
+ * Spawns eagles at regular intervals.
+ */
+public class EagleSpawner extends AbstractEnemySpawner {
 
-    private int x = 0;
-    private int y = 0;
-    private TickTimer timer;
+    private static final int DEFAULT_DURATION = 1000;
 
+    /**
+     * Creates an eagle spawner with default spawn interval.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     */
     public EagleSpawner(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.timer = new RepeatingTimer(1000);
+        super(x, y, DEFAULT_DURATION);
     }
 
+    /**
+     * Creates an eagle spawner with custom spawn interval.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param duration the spawn interval in ticks
+     */
     public EagleSpawner(int x, int y, int duration) {
-        this.x = x;
-        this.y = y;
-        this.timer = new RepeatingTimer(duration);
+        super(x, y, duration);
     }
 
     @Override
-    public TickTimer getTimer() {
-        return this.timer;
-    }
-
-    @Override
-    public void tick(EngineState state, GameState game) {
-        this.timer.tick();
-        if (this.getTimer().isFinished()) {
-            game.getEnemies().spawnX = this.getX();
-            game.getEnemies().spawnY = this.getY();
-            game.getEnemies().Birds.add(game.getEnemies().mkE(game.getPlayer()));
-        }
-    }
-
-    @Override
-    public int getX() {
-        return this.x;
-    }
-
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    @Override
-    public int getY() {
-        return this.y;
-    }
-
-    @Override
-    public void setY(int y) {
-        this.y = y;
+    protected void spawnEnemy(EngineState state, GameState game) {
+        game.getEnemies().setSpawnLocation(getX(), getY());
+        game.getEnemies().mkE(game.getPlayer());
     }
 }

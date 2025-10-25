@@ -2,7 +2,6 @@ package builder.entities.npc;
 
 import builder.GameState;
 import builder.entities.npc.enemies.Enemy;
-import builder.entities.npc.enemies.EnemyManager;
 import builder.entities.npc.enemies.Magpie;
 import builder.entities.npc.enemies.Pigeon;
 import builder.ui.SpriteGallery;
@@ -10,13 +9,24 @@ import builder.ui.SpriteGallery;
 import engine.EngineState;
 import engine.art.sprites.SpriteGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * A scarecrow that scares away Magpies and Pigeons within a certain radius.
+ * When birds get too close, they become frightened and return to their spawn.
+ */
 public class Scarecrow extends Npc {
 
     public static final int COIN_COST = 2;
+    private static final int SCARE_RADIUS_MULTIPLIER = 4;
     private static final SpriteGroup art = SpriteGallery.scarecrow;
 
+    /**
+     * Creates a new scarecrow at the given position.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     */
     public Scarecrow(int x, int y) {
         super(x, y);
         this.setSprite(art.getSprite("default"));
@@ -31,31 +41,17 @@ public class Scarecrow extends Npc {
     @Override
     public void interact(EngineState state, GameState game) {
         super.interact(state, game);
-        EnemyManager enemies = game.getEnemies();
-        final ArrayList<Magpie> magpies = new ArrayList<>();
-        final ArrayList<Pigeon> pigeons = new ArrayList<>();
-        for (Enemy bird : enemies.Birds) {
-            if (bird instanceof Magpie) {
-                magpies.add((Magpie) bird);
-            }
-            if (bird instanceof Pigeon) {
-                pigeons.add((Pigeon) bird);
-            }
-        }
 
-        final int scareRadius = state.getDimensions().tileSize() * 4;
+        final int scareRadius = state.getDimensions().tileSize() * SCARE_RADIUS_MULTIPLIER;
+        List<Enemy> enemies = game.getEnemies().getAllEnemies();
 
-        for (Magpie magpie : magpies) {
-            if (this.distanceFrom(magpie) < scareRadius) {
-                magpie.attacking = false;
-                // trigger the scare animation
-            }
-        }
-
-        for (Pigeon pigeon : pigeons) {
-            if (this.distanceFrom(pigeon) < scareRadius) { //fixing distance < radius
-                pigeon.attacking = false;
-                // trigger the scare animation
+        for (Enemy enemy : enemies) {
+            if (this.distanceFrom(enemy) < scareRadius) {
+                if (enemy instanceof Magpie magpie) {
+                    magpie.attacking = false;
+                } else if (enemy instanceof Pigeon pigeon) {
+                    pigeon.attacking = false;
+                }
             }
         }
     }

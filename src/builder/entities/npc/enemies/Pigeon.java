@@ -35,6 +35,7 @@ public class Pigeon extends Enemy implements Expirable {
         this.spawnY = y;
         this.trackedTarget = trackedTarget;
         this.setSpeed(1);
+        this.setSprite(art.getSprite("down"));  // ← TAMBAH INI!
     }
 
     @Override

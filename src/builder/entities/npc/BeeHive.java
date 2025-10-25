@@ -8,9 +8,11 @@ import engine.EngineState;
 import engine.art.sprites.SpriteGroup;
 import engine.timing.RepeatingTimer;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/** Spawns bees it fires at enemy's within a set range */
+/**
+ * A beehive that spawns guard bees to defend against nearby enemies.
+ */
 public class BeeHive extends Npc {
 
     public static final int DETECTION_DISTANCE = 350;
@@ -22,6 +24,12 @@ public class BeeHive extends Npc {
 
     private final RepeatingTimer timer = new RepeatingTimer(TIMER);
 
+    /**
+     * Creates a new beehive.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     */
     public BeeHive(int x, int y) {
         super(x, y);
         this.setSprite(art.getSprite("default"));
@@ -39,21 +47,26 @@ public class BeeHive extends Npc {
         super.interact(state, game);
 
         timer.tick();
-        Npc npc = this.checkAndSpawnBee(game.getEnemies().Birds);
+        Npc npc = this.checkAndSpawnBee(game.getEnemies().getAllEnemies());
         if (npc != null) {
-            game.getNpcs().npcs.add(npc);
+            game.getNpcs().addNpc(npc);
         }
         if (timer.isFinished()) {
             this.loaded = true;
         }
     }
 
-    public Npc checkAndSpawnBee(ArrayList<Enemy> targets) {
+    /**
+     * Checks if a bee should be spawned to defend against nearby enemies.
+     *
+     * @param targets list of potential enemy targets
+     * @return a new GuardBee if spawned, null otherwise
+     */
+    public Npc checkAndSpawnBee(List<Enemy> targets) {
         for (Enemy enemy : targets) {
             if (this.distanceFrom(enemy) < DETECTION_DISTANCE && this.loaded) {
                 this.loaded = false;
-                return new GuardBee(
-                        this.getX(), this.getY(), enemy); // can only spawn one bee in a frame
+                return new GuardBee(this.getX(), this.getY(), enemy);
             }
         }
         return null;

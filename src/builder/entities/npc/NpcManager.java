@@ -11,24 +11,44 @@ import engine.renderer.Renderable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages all NPCs in the game.
+ * Responsible for tracking, updating, and cleaning up NPCs.
+ */
 public class NpcManager implements Interactable, Tickable, RenderableGroup {
+
+    // Keep public for backward compatibility with Dirt.java and Grass.java
     public final ArrayList<Npc> npcs = new ArrayList<>();
 
+    /**
+     * Creates a new NPC manager.
+     */
     public NpcManager() {}
 
+    /**
+     * Removes all NPCs marked for removal from the active NPC list.
+     */
     public void cleanup() {
-        for (int i = this.npcs.size() - 1; i >= 0; i -= 1) {
-            if (this.npcs.get(i).isMarkedForRemoval()) {
-                this.npcs.remove(i);
-            }
-        }
+        npcs.removeIf(Npc::isMarkedForRemoval);
     }
 
     /**
-     * @param npc npc to add to the manager for it to well manage/track.
+     * Adds an NPC to the manager.
+     *
+     * @param npc the NPC to add
      */
     public void addNpc(Npc npc) {
         this.npcs.add(npc);
+    }
+
+    /**
+     * Gets all active NPCs.
+     * Returns a defensive copy to prevent external modification.
+     *
+     * @return a list of all active NPCs
+     */
+    public List<Npc> getAllNpcs() {
+        return new ArrayList<>(this.npcs);
     }
 
     @Override
@@ -47,11 +67,11 @@ public class NpcManager implements Interactable, Tickable, RenderableGroup {
     }
 
     /**
-     * Returns an ArrayList<Interactable> of interactable
+     * Gets all NPCs that implement Interactable.
      *
-     * @return an ArrayList<Interactable> of interactable
+     * @return a list of interactable NPCs
      */
-    private ArrayList<Interactable> getInteractables() {
+    private List<Interactable> getInteractables() {
         final ArrayList<Interactable> interactables = new ArrayList<>();
         for (Npc npc : npcs) {
             if (npc instanceof Interactable) {
