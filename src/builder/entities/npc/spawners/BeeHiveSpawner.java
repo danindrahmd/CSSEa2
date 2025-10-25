@@ -7,21 +7,46 @@ import engine.EngineState;
 import engine.timing.RepeatingTimer;
 import engine.timing.TickTimer;
 
+/**
+ * Spawner that allows players to create BeeHives by spending resources.
+ * Players can spawn a BeeHive at their current position by pressing 'h'
+ * when they have at least 3 food and 3 coins.
+ */
 public class BeeHiveSpawner implements Spawner {
 
-    RepeatingTimer timer;
-    private int x = 0;
-    private int y = 0;
+    private RepeatingTimer timer;
+    private int xPos = 0;
+    private int yPos = 0;
 
-    public BeeHiveSpawner(int x, int y, int duration) {
-        this.x = x;
-        this.y = y;
+    /**
+     * Creates a new BeeHive spawner at the specified position.
+     *
+     * @param xPos the X coordinate of the spawner
+     * @param yPos the Y coordinate of the spawner
+     * @param duration the timer duration (currently unused)
+     */
+    public BeeHiveSpawner(int xPos, int yPos, int duration) {
+        this.xPos = xPos;
+        this.yPos = yPos;
         this.timer = new RepeatingTimer(300);
     }
 
-    @Override
-    public TickTimer getTimer() {
+    /**
+     * Gets the timer for this spawner.
+     *
+     * @return the timer
+     */
+    public RepeatingTimer getTimer() {
         return this.timer;
+    }
+
+    /**
+     * Sets the timer for this spawner.
+     *
+     * @param timer the new timer
+     */
+    public void setTimer(RepeatingTimer timer) {
+        this.timer = timer;
     }
 
     @Override
@@ -33,29 +58,27 @@ public class BeeHiveSpawner implements Spawner {
         if (canAfford && state.getKeys().isDown('h')) {
             game.getInventory().addFood(-3);
             game.getInventory().addCoins(-3);
-            // OLD: game.getNpcs().npcs.add(new BeeHive(...));
-            // NEW:
             game.getNpcs().addNpc(new BeeHive(game.getPlayer().getX(), game.getPlayer().getY()));
         }
     }
 
     @Override
     public int getX() {
-        return this.x;
+        return this.xPos;
     }
 
     @Override
-    public void setX(int x) {
-        this.x = x;
+    public void setX(int xPos) {
+        this.xPos = xPos;
     }
 
     @Override
     public int getY() {
-        return this.y;
+        return this.yPos;
     }
 
     @Override
-    public void setY(int y) {
-        this.y = y;
+    public void setY(int yPos) {
+        this.yPos = yPos;
     }
 }

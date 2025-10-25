@@ -13,8 +13,20 @@ import engine.timing.TickTimer;
  */
 public interface Spawner extends HasPosition, Tickable {
 
+    /**
+     * Gets the timer associated with this spawner.
+     *
+     * @return the tick timer
+     */
     public TickTimer getTimer();
 
+    /**
+     * Updates the spawner state for the current game tick.
+     * Handles spawn timing and logic.
+     *
+     * @param state the current engine state
+     * @param game the current game state
+     */
     @Override
     public void tick(EngineState state, GameState game);
 
