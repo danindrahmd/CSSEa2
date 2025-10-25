@@ -9,16 +9,28 @@ import engine.art.sprites.SpriteGroup;
 import engine.game.HasPosition;
 import engine.timing.FixedTimer;
 
+/**
+ * Represents an Eagle enemy that tracks and attacks targets to steal food.
+ * Eagles are aggressive birds that pursue their targets, steal food when close enough,
+ * and then return to their spawn point at increased speed.
+ */
 public class Eagle extends Enemy implements Expirable {
 
     private static final SpriteGroup art = SpriteGallery.eagle;
     private FixedTimer lifespan = new FixedTimer(5000);
-    public HasPosition trackedTarget;
+    private HasPosition trackedTarget;
     private boolean attacking = true;
     private int spawnX = 0;
     private int spawnY = 0;
     private int food = 0;
 
+    /**
+     * Creates a new Eagle at the specified position that tracks the given target.
+     *
+     * @param x the initial X coordinate
+     * @param y the initial Y coordinate
+     * @param trackedTarget the target entity to track and attack
+     */
     public Eagle(int x, int y, HasPosition trackedTarget) {
         super(x, y);
         this.spawnX = x;
@@ -43,6 +55,24 @@ public class Eagle extends Enemy implements Expirable {
         }
     }
 
+    /**
+     * Gets the tracked target entity.
+     *
+     * @return the tracked target
+     */
+    public HasPosition getTrackedTarget() {
+        return trackedTarget;
+    }
+
+    /**
+     * Sets the tracked target entity.
+     *
+     * @param trackedTarget the target to track
+     */
+    public void setTrackedTarget(HasPosition trackedTarget) {
+        this.trackedTarget = trackedTarget;
+    }
+
     @Override
     public FixedTimer getLifespan() {
         return lifespan;
@@ -61,7 +91,7 @@ public class Eagle extends Enemy implements Expirable {
             this.markForRemoval();
         }
         if ((this.distanceFrom(game.getPlayer().getX(), game.getPlayer().getY())
-                        < engine.getDimensions().tileSize())
+                < engine.getDimensions().tileSize())
                 && this.attacking) {
             this.attacking = false;
             //      if (game.getInventory().getFood() > 0) {
@@ -100,7 +130,7 @@ public class Eagle extends Enemy implements Expirable {
 
         if (this.isMarkedForRemoval()
                 && this.distanceFrom(this.spawnX, this.spawnY)
-                        > engine.getDimensions().tileSize()) {
+                > engine.getDimensions().tileSize()) {
             game.getInventory().addFood(this.food);
         }
     }

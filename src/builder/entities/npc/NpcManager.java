@@ -17,8 +17,7 @@ import java.util.List;
  */
 public class NpcManager implements Interactable, Tickable, RenderableGroup {
 
-    // Keep public for backward compatibility with Dirt.java and Grass.java
-    public final ArrayList<Npc> npcs = new ArrayList<>();
+    private final ArrayList<Npc> npcs = new ArrayList<>();
 
     /**
      * Creates a new NPC manager.
@@ -49,6 +48,20 @@ public class NpcManager implements Interactable, Tickable, RenderableGroup {
      */
     public List<Npc> getAllNpcs() {
         return new ArrayList<>(this.npcs);
+    }
+
+    /**
+     * Gets the internal NPC list.
+     * This method is provided for backward compatibility with existing code
+     * that directly accesses the npcs field (e.g., Dirt.java and Grass.java).
+     *
+     * WARNING: Direct access to this list should be avoided in new code.
+     * Use getAllNpcs() for safe access or addNpc() to add NPCs.
+     *
+     * @return the internal list of NPCs
+     */
+    public ArrayList<Npc> getNpcs() {
+        return this.npcs;
     }
 
     @Override

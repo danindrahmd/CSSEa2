@@ -48,9 +48,9 @@ public class Scarecrow extends Npc {
         for (Enemy enemy : enemies) {
             if (this.distanceFrom(enemy) < scareRadius) {
                 if (enemy instanceof Magpie magpie) {
-                    magpie.attacking = false;
+                    magpie.setAttacking(false);
                 } else if (enemy instanceof Pigeon pigeon) {
-                    pigeon.attacking = false;
+                    pigeon.setAttacking(false);
                 }
             }
         }

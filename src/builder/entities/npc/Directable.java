@@ -21,7 +21,6 @@ public interface Directable {
 
     /**
      * Determines if this entity's direction can be changed.
-     * @return true if the direction can be changed, false otherwise
      */
     public void move();
 }
