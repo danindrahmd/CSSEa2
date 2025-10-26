@@ -11,35 +11,24 @@ import engine.game.HasPosition;
 import engine.timing.FixedTimer;
 import engine.timing.RepeatingTimer;
 
-/**
- * Represents a Magpie enemy that collects coins and attacks targets.
- * Magpies are attracted to shiny objects and will steal coins from the player,
- * then return to their spawn point.
- */
 public class Magpie extends Enemy implements Expirable {
 
     private static final SpriteGroup art = SpriteGallery.magpie;
     private FixedTimer lifespan = new FixedTimer(10000);
-    private HasPosition trackedTarget;
-    private Boolean attacking;
-    private int coins = 0;
+
+    public HasPosition trackedTarget;
+    public Boolean attacking;
+    public int coins = 0;
 
     private RepeatingTimer directionalUpdateTimer = new RepeatingTimer(30);
 
     private final int spawnX;
     private final int spawnY;
 
-    /**
-     * Creates a new Magpie at the specified position that tracks the given target.
-     *
-     * @param xcoordinate the initial X coordinate
-     * @param ycoordinate the initial Y coordinate
-     * @param trackedTarget the target entity to track and steal from
-     */
-    public Magpie(int xcoordinate, int ycoordinate, HasPosition trackedTarget) {
-        super(xcoordinate, ycoordinate);
-        this.spawnX = xcoordinate;
-        this.spawnY = ycoordinate;
+    public Magpie(int xCoordinate, int yCoordinate, HasPosition trackedTarget) {
+        super(xCoordinate, yCoordinate);
+        this.spawnX = xCoordinate;
+        this.spawnY = yCoordinate;
         this.trackedTarget = trackedTarget;
         this.setSprite(art.getSprite("down"));
         this.attacking = true;
@@ -49,58 +38,9 @@ public class Magpie extends Enemy implements Expirable {
         this.setDirection((int) Math.toDegrees(Math.atan2(deltaY, deltaX)));
     }
 
-    /**
-     * Gets the tracked target entity.
-     *
-     * @return the tracked target
-     */
-    public HasPosition getTrackedTarget() {
-        return trackedTarget;
-    }
-
-    /**
-     * Sets the tracked target entity.
-     *
-     * @param trackedTarget the target to track
-     */
-    public void setTrackedTarget(HasPosition trackedTarget) {
-        this.trackedTarget = trackedTarget;
-    }
-
-    /**
-     * Checks if the magpie is currently attacking.
-     *
-     * @return true if attacking, false otherwise
-     */
-    public Boolean isAttacking() {
-        return attacking;
-    }
-
-    /**
-     * Sets the attacking state of the magpie.
-     *
-     * @param attacking true to set attacking, false otherwise
-     */
-    public void setAttacking(Boolean attacking) {
+    /** minimal setter untuk dipakai Scarecrow */
+    public void setAttacking(boolean attacking) {
         this.attacking = attacking;
-    }
-
-    /**
-     * Gets the number of coins collected by this magpie.
-     *
-     * @return the number of coins
-     */
-    public int getCoins() {
-        return coins;
-    }
-
-    /**
-     * Sets the number of coins collected by this magpie.
-     *
-     * @param coins the number of coins
-     */
-    public void setCoins(int coins) {
-        this.coins = coins;
     }
 
     @Override
@@ -124,7 +64,7 @@ public class Magpie extends Enemy implements Expirable {
             double deltaX = trackedTarget.getX() - this.getX();
             double deltaY = trackedTarget.getY() - this.getY();
             this.setDirection((int) Math.toDegrees(Math.atan2(deltaY, deltaX)));
-            // Target is below
+            /** target is below */
             if (trackedTarget.getY() > this.getY()) {
                 this.setSprite(art.getSprite("down"));
             } else {
@@ -165,6 +105,13 @@ public class Magpie extends Enemy implements Expirable {
         }
     }
 
+    /**
+     * Handles interaction behaviour with the player.
+     * @param game The state of the game, including the player and world. Can be used to query or
+     *     update the game state.
+     */
     @Override
-    public void interact(EngineState engine, GameState game) {}
+    public void interact(EngineState engine, GameState game) {
+        // no-op for Magpie
+    }
 }
