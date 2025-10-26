@@ -11,36 +11,97 @@ import engine.game.HasPosition;
 import engine.timing.FixedTimer;
 import engine.timing.RepeatingTimer;
 
+/**
+ * Magpie enemy that attacks the player and steals coins.
+ * After stealing a coin, the magpie returns to its spawn location.
+ */
 public class Magpie extends Enemy implements Expirable {
 
     private static final SpriteGroup art = SpriteGallery.magpie;
     private FixedTimer lifespan = new FixedTimer(10000);
 
-    public HasPosition trackedTarget;
-    public Boolean attacking;
-    public int coins = 0;
+    private HasPosition trackedTarget;
+    private Boolean attacking;
+    private int coins = 0;
 
     private RepeatingTimer directionalUpdateTimer = new RepeatingTimer(30);
 
     private final int spawnX;
     private final int spawnY;
 
-    public Magpie(int xCoordinate, int yCoordinate, HasPosition trackedTarget) {
-        super(xCoordinate, yCoordinate);
-        this.spawnX = xCoordinate;
-        this.spawnY = yCoordinate;
-        this.trackedTarget = trackedTarget;
+    /**
+     * Creates a new Magpie enemy.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param target the target to track (usually the player)
+     */
+    public Magpie(int x, int y, HasPosition target) {
+        super(x, y);
+        this.spawnX = x;
+        this.spawnY = y;
+        this.trackedTarget = target;
         this.setSprite(art.getSprite("down"));
         this.attacking = true;
 
-        double deltaX = trackedTarget.getX() - this.getX();
-        double deltaY = trackedTarget.getY() - this.getY();
+        double deltaX = target.getX() - this.getX();
+        double deltaY = target.getY() - this.getY();
         this.setDirection((int) Math.toDegrees(Math.atan2(deltaY, deltaX)));
     }
 
-    /** minimal setter untuk dipakai Scarecrow */
+    /**
+     * Gets the tracked target.
+     *
+     * @return the tracked target
+     */
+    public HasPosition getTrackedTarget() {
+        return trackedTarget;
+    }
+
+    /**
+     * Sets the tracked target.
+     *
+     * @param target the new tracked target
+     */
+    public void setTrackedTarget(HasPosition target) {
+        this.trackedTarget = target;
+    }
+
+    /**
+     * Checks if the magpie is attacking.
+     *
+     * @return true if attacking, false otherwise
+     */
+    public Boolean isAttacking() {
+        return attacking;
+    }
+
+    /**
+     * Sets whether the magpie is attacking.
+     * Used by Scarecrow to make magpies flee.
+     *
+     * @param attacking true to attack, false to flee
+     */
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
+    }
+
+    /**
+     * Gets the number of coins stolen.
+     *
+     * @return the number of coins
+     */
+    public int getCoins() {
+        return coins;
+    }
+
+    /**
+     * Sets the number of coins stolen.
+     *
+     * @param coins the number of coins
+     */
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 
     @Override
@@ -64,7 +125,7 @@ public class Magpie extends Enemy implements Expirable {
             double deltaX = trackedTarget.getX() - this.getX();
             double deltaY = trackedTarget.getY() - this.getY();
             this.setDirection((int) Math.toDegrees(Math.atan2(deltaY, deltaX)));
-            /** target is below */
+            // Target is below
             if (trackedTarget.getY() > this.getY()) {
                 this.setSprite(art.getSprite("down"));
             } else {
@@ -107,6 +168,8 @@ public class Magpie extends Enemy implements Expirable {
 
     /**
      * Handles interaction behaviour with the player.
+     *
+     * @param engine The engine state
      * @param game The state of the game, including the player and world. Can be used to query or
      *     update the game state.
      */
