@@ -280,7 +280,7 @@ public class PigeonSpawnerTest {
     @Test
     public void testDistanceCalculationArithmetic() throws IOException, WorldLoadException {
         // Setup: Test with spawner at known position
-        ScenarioDetails details = new ScenarioDetails(400, 400, 5, 0);
+        ScenarioDetails details = new ScenarioDetails(400, 400, 5, 0); // Give 5 food
         details.addPigeonSpawner(150, 150, 40); // Spawner at (150, 150)
         final Game game = new JavaBeanFarm(
                 dimensions,
@@ -304,23 +304,27 @@ public class PigeonSpawnerTest {
         }
 
         // Verify: Pigeon spawned
-        Assert.assertTrue("Pigeon should spawn when cabbage exists",
-                data.getBySpriteGroup("pigeon").size() > 0);
+        int pigeonCount = data.getBySpriteGroup("pigeon").size();
+        Assert.assertTrue("Pigeon should spawn when cabbage exists (found " + pigeonCount + ")",
+                pigeonCount > 0);
 
-        // Verify: Pigeon spawns from spawner location (150, 150)
-        RenderableAnalyser pigeon = data.getFirstSpawnedOfSpriteGroup("pigeon");
-        int firstX = pigeon.getFirstFrame().getX();
-        int firstY = pigeon.getFirstFrame().getY();
+        // Only verify distance if pigeon spawned
+        if (pigeonCount > 0) {
+            // Verify: Pigeon spawns from spawner location (150, 150)
+            RenderableAnalyser pigeon = data.getFirstSpawnedOfSpriteGroup("pigeon");
+            int firstX = pigeon.getFirstFrame().getX();
+            int firstY = pigeon.getFirstFrame().getY();
 
-        // Calculate distance from spawner to first pigeon position
-        int dx = firstX - 150;
-        int dy = firstY - 150;
-        int distance = (int) Math.sqrt(dx * dx + dy * dy);
+            // Calculate distance from spawner to first pigeon position
+            int dx = firstX - 150;
+            int dy = firstY - 150;
+            int distance = (int) Math.sqrt(dx * dx + dy * dy);
 
-        // Should spawn very close to spawner position
-        Assert.assertTrue(
-                "Pigeon should spawn near spawner (distance should be small)",
-                distance < 50);
+            // Should spawn very close to spawner position
+            Assert.assertTrue(
+                    "Pigeon should spawn near spawner (distance should be small)",
+                    distance < 50);
+        }
     }
 
     // ===== Test 8: Multiple spawn cycles =====

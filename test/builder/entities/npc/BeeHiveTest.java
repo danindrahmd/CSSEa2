@@ -44,8 +44,8 @@ public class BeeHiveTest {
         // Verify sprite is set (not null)
         Assert.assertNotNull("Sprite should be set by constructor", hive.getSprite());
 
-        // Verify speed is set to 0
-        Assert.assertEquals("Speed should be 0 for stationary hive", 0, hive.getSpeed());
+        // Verify speed is set to 0 (using delta for double comparison)
+        Assert.assertEquals("Speed should be 0 for stationary hive", 0.0, hive.getSpeed(), 0.01);
 
         // Verify position
         Assert.assertEquals("X position should be 300", 300, hive.getX());
